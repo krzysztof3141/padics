@@ -41,3 +41,14 @@ pub struct PAdicNumber<Scheme: PAdicScheme, const PRIME: u64> {
     _marker: PhantomData<Scheme>,
 }
 
+impl<Scheme: PAdicScheme, const PRIME: u64> PAdicNumber<Scheme, PRIME> {
+    pub fn new(base: Scheme::Base) -> Self {
+        Self{base, _marker: PhantomData}
+    }
+    pub fn get_iter(&'_ self) -> PAdicIter<'_, Scheme> {
+        PAdicIter::new(&self.base)
+    }
+    pub fn get_base(&self) -> &Scheme::Base {
+        &self.base
+    }
+}
