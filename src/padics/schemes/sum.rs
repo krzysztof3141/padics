@@ -28,7 +28,7 @@ impl<LhsScheme: PAdicScheme, RhsScheme: PAdicScheme>  SumBase<LhsScheme, RhsSche
 }
 
 
-impl<LhsScheme: PAdicScheme + Default + Clone, RhsScheme: PAdicScheme + Default + Clone> PAdicScheme for SumScheme<LhsScheme, RhsScheme> {
+impl<LhsScheme: PAdicScheme, RhsScheme: PAdicScheme> PAdicScheme for SumScheme<LhsScheme, RhsScheme> {
     type Base = SumBase<LhsScheme, RhsScheme>;
     type Dyn = SumDyn<LhsScheme, RhsScheme>;
     fn next(base: &Self::Base, dyns: &mut Self::Dyn) -> u64 {
