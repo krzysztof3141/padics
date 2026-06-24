@@ -1,7 +1,7 @@
 use std::marker::PhantomData;
 
-pub trait PAdicScheme {
-    type Base: Default;
+pub trait PAdicScheme: Default + Clone {
+    type Base: Clone;
     type Dyn: Default;
     fn next(base: &Self::Base, dyns: &mut Self::Dyn) -> u64;
 }
@@ -35,7 +35,8 @@ impl<'a, Scheme: PAdicScheme> Iterator for PAdicIter<'a, Scheme> {
     }
 }
 
-struct PAdicNumber<Scheme: PAdicScheme, const Prime: u64> {
+#[derive(Default, Clone)]
+pub struct PAdicNumber<Scheme: PAdicScheme, const PRIME: u64> {
     base: Scheme::Base,
     _marker: PhantomData<Scheme>,
 }

@@ -1,11 +1,12 @@
 use crate::padics::core::PAdicScheme;
 
-pub struct RationalScheme {}
+#[derive(Default, Clone)]
+pub struct RationalScheme<const START_SIZE: usize, const REPEAT_SIZE: usize> {}
 
-#[derive(Default)]
-pub struct RationalSeries {
-    pub start: Vec<u64>,
-    pub repeat: Vec<u64>,
+#[derive(Clone)]
+pub struct RationalSeries<const START_SIZE: usize, const REPEAT_SIZE: usize> {
+    pub start: [u64; START_SIZE],
+    pub repeat: [u64; REPEAT_SIZE],
 }
 
 pub struct RationalNumber {
@@ -13,33 +14,29 @@ pub struct RationalNumber {
     denominator: u64,
 }
 
-#[derive(Default)]
-pub struct RationalBase {
-    series: RationalSeries,
-    number:  Option<RationalNumber>,
+#[derive(Clone)]
+pub struct RationalBase<const START_SIZE: usize, const REPEAT_SIZE: usize> {
+    series: RationalSeries<START_SIZE, REPEAT_SIZE>,
 }
 
-
-impl RationalBase {
-    pub fn new(series: RationalSeries) -> Self {
-        Self {
-            series, number: None
-        }
+impl<const START_SIZE: usize, const REPEAT_SIZE: usize> RationalBase<START_SIZE, REPEAT_SIZE> {
+    pub fn new(series: RationalSeries<START_SIZE, REPEAT_SIZE>) -> Self {
+        Self { series }
     }
 }
 
 #[derive(Default)]
 pub struct RationalDyn {
     pub index: usize,
-    pub repeating: bool
+    pub repeat: bool
 }
 
-impl PAdicScheme for RationalScheme {
-    type Base = RationalBase;
+impl<const START_SIZE: usize, const REPEAT_SIZE: usize> PAdicScheme for RationalScheme<START_SIZE, REPEAT_SIZE> {
+    type Base = RationalBase<START_SIZE, REPEAT_SIZE>;
     type Dyn = RationalDyn;
 
     fn next(base: &Self::Base, dyns: &mut Self::Dyn) -> u64 {
-        if dyns.repeating {
+        if dyns.repeat {
             match base.series.repeat.get(dyns.index) {
                 Some(x) => {
                     dyns.index += 1;
@@ -57,9 +54,9 @@ impl PAdicScheme for RationalScheme {
                     x.clone()
                 }
                 None => {
-                    dyns.repeating = true;
+                    dyns.repeat = true;
                     dyns.index = 1;
-                    base.series.repeat.get(0).unwrap_or(&0).clone()
+                    base.series.start.get(0).unwrap_or(&0).clone()
                 }
             }
         }
