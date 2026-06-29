@@ -43,12 +43,12 @@ impl<const PRIME: u64> Pow<usize> for Box<dyn PAdicNumber<PRIME>> {
         let mut exp = rhs.clone();
 
         if exp == 0 {
-            return Box::new(RationalNumber::new([1], []));
+            return RationalNumber::one();
         }
 
         let mut base = self.clone_box();
 
-        let mut result: Box<dyn PAdicNumber<PRIME>> = Box::new(RationalNumber::new([1], []));
+        let mut result: Box<dyn PAdicNumber<PRIME>> = RationalNumber::one();
 
         while exp > 1 {
             if exp & 1 == 1 {

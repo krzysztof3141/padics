@@ -1,4 +1,4 @@
-fn to_base_p(mut n: u64, p: u64) -> Vec<u64> {
+pub fn to_base_p(mut n: u64, p: u64) -> Vec<u64> {
     if n == 0 {
         return vec![0];
     }
