@@ -1,46 +1,48 @@
-use std::marker::PhantomData;
-use crate::padics::core::PAdicScheme;
+use crate::padics::core::{PAdicIter, PAdicNumber};
 
-#[derive(Default, Clone)]
-pub struct NegScheme<Scheme: PAdicScheme> {
-    _marker: PhantomData<Scheme>,
-}
-
-pub struct NegDyn<Scheme: PAdicScheme> {
-    dyns: Scheme::Dyn,
+pub struct NegIter<const PRIME: u64> {
+    neg_iter: Box<dyn PAdicIter>,
     is_first_digit: bool,
 }
-
-impl<Scheme: PAdicScheme> Default for NegDyn<Scheme> {
-    fn default() -> Self {
-        Self {dyns: Scheme::Dyn::default(), is_first_digit: true}
+impl<const PRIME: u64> NegIter<PRIME> {
+    fn new(neg_iter: Box<dyn PAdicIter>) -> Self {
+        Self { neg_iter, is_first_digit : true }
     }
 }
-
-#[derive(Clone)]
-pub struct NegBase<Scheme: PAdicScheme> {
-    base: Scheme::Base,
-    prime: u64
+impl<const PRIME: u64> PAdicIter for NegIter<PRIME> {
+   fn clone_box(&self) -> Box<dyn PAdicIter> {
+       Box::new(Self::new(self.neg_iter.clone_box()))
+   }
 }
 
-impl<Scheme: PAdicScheme> NegBase<Scheme> {
-    pub fn new(base: Scheme::Base, prime: u64) -> Self {
-        Self { base, prime }
-    }
-}
-
-impl<Scheme: PAdicScheme> PAdicScheme for NegScheme<Scheme> {
-    type Base = NegBase<Scheme>;
-    type Dyn = NegDyn<Scheme>;
-
-    fn next(base: &Self::Base, dyns: &mut Self::Dyn) -> u64 {
-        let next = Scheme::next(&base.base, &mut dyns.dyns);
-
-        if dyns.is_first_digit {
-            dyns.is_first_digit = false;
-            return base.prime - next;
+impl<const PRIME: u64> Iterator for NegIter<PRIME> {
+    type Item = u64;
+    fn next(&mut self) -> Option<u64> {
+        if self.is_first_digit {
+            self.is_first_digit = false;
+            return Some(PRIME - self.neg_iter.next().unwrap_or(0));
         }
 
-        base.prime - next - 1
+        Some(PRIME - self.neg_iter.next().unwrap_or(0) - 1)
+    }
+}
+
+pub struct NegNumber<const PRIME: u64> {
+    neg_iter: Box<dyn PAdicIter>,
+}
+
+impl<const PRIME: u64> NegNumber<PRIME>  {
+    pub fn new(neg_iter: Box<dyn PAdicIter>) -> Self{
+        Self{neg_iter}
+    }
+}
+
+impl<const PRIME: u64> PAdicNumber<PRIME> for NegNumber<PRIME> {
+    fn iter(&self) -> Box<dyn PAdicIter> {
+        Box::new(NegIter::<PRIME>::new(self.neg_iter.clone_box()))
+    }
+
+    fn clone_box(&self) -> Box<dyn PAdicNumber<PRIME>> {
+        Box::new(Self::new(self.neg_iter.clone_box()))
     }
 }

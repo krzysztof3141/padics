@@ -1,49 +1,26 @@
-use crate::padics::core::{PAdicNumber, PAdicScheme};
-
 use std::ops::{Add, Neg, Sub};
-use crate::padics::schemes::neg::{NegBase, NegScheme};
-use crate::padics::schemes::sum::{SumBase, SumScheme};
+use crate::padics::core::PAdicNumber;
+use crate::padics::schemes::neg::NegNumber;
+use crate::padics::schemes::sum::{SumIter, SumNumber};
 
-impl<'a, 'b, LhsScheme, RhsScheme, const PRIME: u64> Add<&'b PAdicNumber<RhsScheme, PRIME>>
-for &'a PAdicNumber<LhsScheme, PRIME>
-where
-    LhsScheme: PAdicScheme,
-    RhsScheme: PAdicScheme,
-{
-    type Output = PAdicNumber<SumScheme<LhsScheme, RhsScheme>, PRIME>;
 
-    fn add(self, rhs: &'b PAdicNumber<RhsScheme, PRIME>) -> Self::Output {
-        PAdicNumber::new(SumBase::new(
-            self.get_base().clone(),
-            rhs.get_base().clone(),
-            PRIME,
-        ))
+impl<const PRIME: u64> Add for Box<dyn PAdicNumber<PRIME>> {
+    type Output = Box<dyn PAdicNumber<PRIME>>;
+    fn add(self, rhs: Box<dyn PAdicNumber<PRIME>>) -> Self::Output {
+        Box::new(SumNumber::new(self.iter(), rhs.iter()))
     }
 }
 
-impl<'a, 'b, LhsScheme, RhsScheme, const PRIME: u64> Sub<&'b PAdicNumber<RhsScheme, PRIME>>
-for &'a PAdicNumber<LhsScheme, PRIME>
-where
-    LhsScheme: PAdicScheme,
-    RhsScheme: PAdicScheme,
-{
-    type Output = PAdicNumber<SumScheme<LhsScheme, NegScheme<RhsScheme>>, PRIME>;
-
-    fn sub(self, rhs: &'b PAdicNumber<RhsScheme, PRIME>) -> Self::Output {
-        PAdicNumber::new(SumBase::new(
-            self.get_base().clone(),
-            NegBase::new(rhs.get_base().clone(), PRIME),
-            PRIME,
-        ))
-    }
-}
-
-impl <'a, Scheme, const PRIME: u64> Neg for &'a PAdicNumber<Scheme, PRIME>
-where
-    Scheme: PAdicScheme
-{
-    type Output = PAdicNumber<NegScheme<Scheme>, PRIME>;
+impl<const PRIME: u64> Neg for Box<dyn PAdicNumber<PRIME>> {
+    type Output = Box<dyn PAdicNumber<PRIME>>;
     fn neg(self) -> Self::Output {
-        PAdicNumber::new(NegBase::new(self.get_base().clone(), PRIME))
+        Box::new(NegNumber::new(self.iter()))
+    }
+}
+
+impl<const PRIME: u64> Sub for Box<dyn PAdicNumber<PRIME>> {
+    type Output = Box<dyn PAdicNumber<PRIME>>;
+    fn sub(self, rhs: Box<dyn PAdicNumber<PRIME>>) -> Self::Output {
+        Box::new(SumNumber::new(self.iter(), (-rhs).iter()))
     }
 }
