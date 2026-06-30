@@ -1,1 +1,1 @@
-mod compute_teichmuller_numbers;
+pub mod compute_teichmuller_numbers;

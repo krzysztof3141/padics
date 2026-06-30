@@ -3,7 +3,7 @@ use crate::features::hensel_lemma::polynomial::Polynomial;
 use crate::padics::core::PAdicNumber;
 use crate::padics::schemes::rational::RationalNumber;
 
-fn compute_teichmuller_numbers<const PRIME: u64>() -> Vec<Box<dyn PAdicNumber<PRIME>>> {
+pub fn compute_teichmuller_numbers<const PRIME: u64>() -> Vec<Box<dyn PAdicNumber<PRIME>>> {
     let mut coefficients = vec![RationalNumber::zero(), - RationalNumber::one()];
 
     for _ in 2..PRIME {

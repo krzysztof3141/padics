@@ -1,2 +1,2 @@
 pub mod hensel_lemma;
-mod teichmuller;
+pub mod teichmuller;
