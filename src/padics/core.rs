@@ -16,7 +16,7 @@ impl<const PRIME: u64> Display for dyn PAdicNumber<PRIME> {
         let mut working_iter = self.iter();
 
         let mut digits = Vec::new();
-        for n in 0..SIZE - 1 {
+        for n in 0..SIZE {
             let digit = working_iter.next().unwrap_or(0);
             digits.push(format!("{}*{}^{}", digit, PRIME, n));
         }
