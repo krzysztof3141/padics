@@ -1,5 +1,3 @@
-use std::iter::Cycle;
-use std::vec::IntoIter;
 use crate::math_utils::to_base_p::to_base_p;
 use crate::padics::core::PAdicNumber;
 use crate::padics::schemes::rational::RationalNumber;

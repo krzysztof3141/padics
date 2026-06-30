@@ -34,8 +34,6 @@ impl<const PRIME: u64> Polynomial<PRIME> {
     }
 
     pub fn derivative(&self) -> Polynomial<PRIME> {
-        let one: Box<dyn PAdicNumber<PRIME>> =  RationalNumber::one();
-
         let mut coefficients = vec![];
 
         for (n, c) in self.coefficients.iter().enumerate() {

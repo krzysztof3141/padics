@@ -1,12 +1,12 @@
 use std::ops::{Add, Mul, Neg, Sub, Div};
 use num_traits::Pow;
 use crate::padics::core::PAdicNumber;
-use crate::padics::schemes::mul::{MulIter, MulNumber};
+use crate::padics::schemes::mul::{MulNumber};
 use crate::padics::schemes::neg::NegNumber;
 use crate::padics::schemes::pow::PowNumber;
 use crate::padics::schemes::div_p::DivPNumber;
 use crate::padics::schemes::rational::RationalNumber;
-use crate::padics::schemes::sum::{SumIter, SumNumber};
+use crate::padics::schemes::sum::{SumNumber};
 
 
 impl<const PRIME: u64> Add for Box<dyn PAdicNumber<PRIME>> {
