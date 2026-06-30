@@ -52,7 +52,7 @@ impl<const PRIME: u64> Pow<usize> for Box<dyn PAdicNumber<PRIME>> {
 
         while exp > 1 {
             if exp & 1 == 1 {
-                result = result * self.clone_box();
+                result = result * base.clone_box();
             }
 
             base = Box::new(PowNumber::<PRIME>::new(base.iter()));
