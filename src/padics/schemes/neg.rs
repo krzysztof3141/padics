@@ -2,11 +2,11 @@ use crate::padics::core::{PAdicIter, PAdicNumber};
 
 pub struct NegIter<const PRIME: u64> {
     neg_iter: Box<dyn PAdicIter>,
-    is_first_digit: bool,
+    was_any_non_zero: bool,
 }
 impl<const PRIME: u64> NegIter<PRIME> {
     fn new(neg_iter: Box<dyn PAdicIter>) -> Self {
-        Self { neg_iter, is_first_digit : true }
+        Self { neg_iter, was_any_non_zero : false }
     }
 }
 impl<const PRIME: u64> PAdicIter for NegIter<PRIME> {
@@ -18,12 +18,16 @@ impl<const PRIME: u64> PAdicIter for NegIter<PRIME> {
 impl<const PRIME: u64> Iterator for NegIter<PRIME> {
     type Item = u64;
     fn next(&mut self) -> Option<u64> {
-        if self.is_first_digit {
-            self.is_first_digit = false;
-            return Some(PRIME - self.neg_iter.next().unwrap_or(0));
+        let next = self.neg_iter.next().unwrap_or(0);
+        if !self.was_any_non_zero && next == 0 {
+            return Some(0);
+        }
+        else if !self.was_any_non_zero && next != 0 {
+            self.was_any_non_zero = true;
+            return Some(PRIME - next);
         }
 
-        Some(PRIME - self.neg_iter.next().unwrap_or(0) - 1)
+        Some(PRIME - next - 1)
     }
 }
 
