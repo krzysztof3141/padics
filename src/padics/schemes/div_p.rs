@@ -19,7 +19,7 @@ impl<const PRIME: u64> PAdicNumber<PRIME> for DivPNumber<PRIME> {
             cloned_iter.next();
         }
 
-        cloned_iter.clone_box()
+        cloned_iter
     }
 
     fn clone_box(&self) -> Box<dyn PAdicNumber<PRIME>> {
