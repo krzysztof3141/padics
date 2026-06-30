@@ -3,7 +3,7 @@ pub fn to_base_p(mut n: u64, p: u64) -> Vec<u64> {
         return vec![0];
     }
     if p < 2 {
-        return vec![];
+        return vec![0];
     }
 
     let mut digits = Vec::new();
@@ -13,8 +13,6 @@ pub fn to_base_p(mut n: u64, p: u64) -> Vec<u64> {
         digits.push(remainder);
         n /= p;
     }
-
-    digits.reverse();
 
     digits
 }
