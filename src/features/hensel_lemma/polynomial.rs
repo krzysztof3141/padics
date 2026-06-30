@@ -27,7 +27,7 @@ impl<const PRIME: u64> Polynomial<PRIME> {
         let mut res: Box<dyn PAdicNumber<PRIME>> = RationalNumber::zero();
 
         for (n, c) in self.coefficients.iter().enumerate() {
-            res = res + c.clone_box() * x.clone_box().pow(n);
+            res = res + (c.clone_box() * x.clone_box().pow(n));
         }
 
         res

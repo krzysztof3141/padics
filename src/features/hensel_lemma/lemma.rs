@@ -9,7 +9,10 @@ pub fn hensel_lemma<const PRIME: u64>(p: Polynomial<PRIME>) -> Vec<Box<dyn PAdic
     let mut hensel_numbers: Vec<Box<dyn PAdicNumber<PRIME>>> = vec![];
     for n in 0..PRIME {
         let a_0 = RationalNumber::from_natural(n);
-        if p.value(a_0.clone_box()).iter().next().unwrap_or(0) == 0 && p.derivative().value(a_0.clone_box()).iter().next().unwrap_or(0) != 0 {
+        let f_a = p.value(a_0.clone_box());
+        let df_a = p.derivative().value(a_0.clone_box());
+
+        if f_a.iter().next().unwrap_or(0) == 0 && df_a.iter().next().unwrap_or(0) != 0 {
             hensel_numbers.push(Box::new( HenselNumber::new(p.clone(), a_0)));
         }
     }
